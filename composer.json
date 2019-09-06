@@ -1,0 +1,11 @@
+{
+	"name": "abuyoyo/plugincore",
+	"description": "WordPress plugin core helper class",
+	"type": "library",
+	"license": "BSD-3-Clause",
+	"autoload": {
+		"psr-4": {
+			"WPHelper\\" : ""
+		}
+	}
+}
