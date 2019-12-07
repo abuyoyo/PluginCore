@@ -7,7 +7,7 @@
  * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
- * @version 0.5
+ * @version 0.6
  * 
  * @todo add admin menu page option
  * @todo plugin_action_links - on Plugins page
@@ -18,7 +18,7 @@ namespace WPHelper;
 
 class PluginCore{
 
-	private $title;
+	private $title; // these should be public essentially - func? var?
 
 	private $slug;
 
@@ -70,11 +70,15 @@ class PluginCore{
 	 */
 	function setup(){
 
-		define( $this->const . '_PATH', plugin_dir_path( $this->plugin_file ) );
-		define( $this->const . '_DIR', plugin_dir_path( $this->plugin_file ) );
+		// init path and url
+		$this->path();
+		$this->url();
 
-		define( $this->const . '_URL', plugin_dir_url( $this->plugin_file ) );
-		define( $this->const . '_BASENAME', plugin_basename( $this->plugin_file ) );
+		define( $this->const . '_PATH', $this->path() );
+		define( $this->const . '_DIR', $this->path() );
+
+		define( $this->const . '_URL', $this->url() );
+		define( $this->const . '_BASENAME', $this->url() );
 
 		define( $this->const . '_PLUGIN_FILE',  $this->plugin_file );
 		define( $this->const . '_FILE',  $this->plugin_file );
@@ -102,8 +106,13 @@ class PluginCore{
 		return $this->title;
 	}
 
-	function slug($slug){
-		$this->slug = $slug;
+	function name($title=null){
+		return $this->title($title);
+	}
+
+	function slug($slug=null){
+		if ($slug)
+			$this->slug = $slug;
 		return $this->slug;
 	}
 
@@ -115,6 +124,19 @@ class PluginCore{
 	function const($const){
 		$this->const = $const;
 		return $this->const;
+	}
+
+
+	function path(){
+		if (! $this->path)
+			$this->path = plugin_dir_path( $this->plugin_file );
+		return $this->path;
+	}
+
+	function url(){
+		if (! $this->url)
+			$this->url = plugin_dir_url( $this->plugin_file );
+		return $this->url;
 	}
 
 	function activate_cb($activate_cb){
