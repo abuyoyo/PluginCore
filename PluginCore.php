@@ -107,7 +107,7 @@ class PluginCore{
 		define( $this->const . '_DIR', $this->path() );
 
 		define( $this->const . '_URL', $this->url() );
-		define( $this->const . '_BASENAME', $this->url() );
+		define( $this->const . '_BASENAME', plugin_basename( $this->plugin_file ) );
 
 		define( $this->const . '_PLUGIN_FILE',  $this->plugin_file );
 		define( $this->const . '_FILE',  $this->plugin_file );
