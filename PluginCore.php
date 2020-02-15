@@ -7,7 +7,7 @@
  * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
- * @version 0.7
+ * @version 0.9
  * 
  * @todo add admin menu page option
  * @todo plugin_action_links - on Plugins page
@@ -31,6 +31,21 @@ class PluginCore{
 	public $deactivate_cb;
 
 	public $uninstall_cb;
+
+
+	/**
+	 * Experimental plugin update checker
+	 * Using yahnis-elsts/plugin-update-checker
+	 */
+	private $update_checker;
+
+	private $update_repo_uri;
+	
+	private $update_auth;
+	
+	private $update_branch;
+
+
 
 	/**
 	 * Static array of all PluginCore instances
@@ -86,7 +101,7 @@ class PluginCore{
 			}
 
 			if ( isset( $options->update_checker ) ){
-				// Puc_v4_Factory::buildUpdateChecker
+				$this->update_checker( $options->update_checker );
 			}
 		}
 		
@@ -115,6 +130,12 @@ class PluginCore{
 		$this->register_hooks();
 
 		self::$cores[$this->slug()] = $this; // using slug() method
+
+
+		if ( $this->update_checker == true ){
+			// run early - before Puc_v4p8_Scheduler->maybeCheckForUpdates() [admin_init 10]
+			add_action( 'admin_init', [$this, 'init_update_checker'], 9 );
+		}
 	}
 
 	private function register_hooks(){
@@ -215,6 +236,67 @@ class PluginCore{
 	private function uninstall_cb( $uninstall_cb ){
 		// test is_callable() ? or is it too soon?
 		$this->uninstall_cb = $uninstall_cb;
+	}
+
+	private function update_checker( $update_checker ){
+		// Puc_v4_Factory::buildUpdateChecker
+		if ( empty( $update_checker ) ){
+			$this->update_checker = false;
+		}else{
+			if ( is_bool( $update_checker ) ){
+				$this->update_checker = $update_checker;
+			}
+
+			if ( is_string( $update_checker ) ){
+				$this->update_checker = true;
+				$this->update_repo_uri = $update_checker;
+			}
+
+			if ( is_array( $update_checker ) ){
+				$this->update_checker = true;
+
+				if ( $update_checker['uri'] ){
+					$this->update_repo_uri = $update_checker['uri'];
+				}
+				if ( $update_checker['auth'] ){
+					$this->update_auth = $update_checker['auth'];
+				}
+
+				if ( $update_checker['branch'] ){
+					$this->update_branch = $update_checker['branch'];
+				}
+			}
+		}
+	}
+
+	public function init_update_checker(){
+	
+		if ( ! class_exists('Puc_v4_Factory') )
+			return;
+
+		if ( ! isset( $this->update_repo_uri ) ){
+			$plugin_data = get_plugin_data( $this->plugin_file , false ); // false = no markup (i think)
+			
+			if ( isset( $plugin_data['PluginURI'] ) )
+				$this->update_repo_uri = $plugin_data['PluginURI'];
+			else
+				return;
+		}
+		// wp_dump($this);
+		$update_checker = \Puc_v4_Factory::buildUpdateChecker(
+			$this->update_repo_uri,
+			$this->plugin_file,
+			$this->slug
+		);
+
+		//Optional: If you're using a private repository, specify the access token like this:
+		if ( isset( $this->update_auth ) )
+			$update_checker->setAuthentication( $this->update_auth );
+
+		//Optional: Set the branch that contains the stable release.
+		if ( isset( $this->update_branch ) )
+			$update_checker->setBranch( $this->update_branch );
+
 	}
 
 
