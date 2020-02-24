@@ -255,14 +255,14 @@ class PluginCore{
 			if ( is_array( $update_checker ) ){
 				$this->update_checker = true;
 
-				if ( $update_checker['uri'] ){
+				if ( isset( $update_checker['uri'] ) ){
 					$this->update_repo_uri = $update_checker['uri'];
 				}
-				if ( $update_checker['auth'] ){
+				if ( isset( $update_checker['auth'] ) ){
 					$this->update_auth = $update_checker['auth'];
 				}
 
-				if ( $update_checker['branch'] ){
+				if ( isset( $update_checker['branch'] ) ){
 					$this->update_branch = $update_checker['branch'];
 				}
 			}
