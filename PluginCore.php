@@ -7,7 +7,7 @@
  * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
- * @version 0.9
+ * @version 0.11
  * 
  * @todo add admin menu page option
  * @todo plugin_action_links - on Plugins page
@@ -31,6 +31,8 @@ class PluginCore{
 	public $deactivate_cb;
 
 	public $uninstall_cb;
+
+	public $upgrade_cb;
 
 
 	/**
@@ -96,6 +98,9 @@ class PluginCore{
 			if ( isset( $options->uninstall_cb ) )
 				$this->uninstall_cb( $options->uninstall_cb );
 
+			if ( isset( $options->upgrade_cb ) )
+				$this->upgrade_cb( $options->upgrade_cb );
+
 			if ( isset( $options->admin_menu_page ) ){
 				// new WPHelper/AdminMenuPage()
 			}
@@ -148,6 +153,9 @@ class PluginCore{
 
 		if ( ! empty( $this->uninstall_cb ) )
 			register_uninstall_hook( $this->plugin_file, $this->uninstall_cb );
+
+		if ( ! empty( $this->unpgrade_cb ) )
+			add_action( 'upgrader_process_complete', $this->unpgrade_cb, 10, 2 );
 	}
 
 	public function title( $title=null ){
@@ -236,6 +244,11 @@ class PluginCore{
 	private function uninstall_cb( $uninstall_cb ){
 		// test is_callable() ? or is it too soon?
 		$this->uninstall_cb = $uninstall_cb;
+	}
+
+	private function upgrade_cb( $upgrade_cb ){
+		// test is_callable() ? or is it too soon?
+		$this->upgrade_cb = $upgrade_cb;
 	}
 
 	private function update_checker( $update_checker ){
