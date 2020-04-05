@@ -7,7 +7,7 @@
  * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
- * @version 0.11
+ * @version 0.12
  * 
  * @todo add admin menu page option
  * @todo plugin_action_links - on Plugins page
@@ -127,7 +127,7 @@ class PluginCore{
 		define( $this->const . '_DIR', $this->path() );
 
 		define( $this->const . '_URL', $this->url() );
-		define( $this->const . '_BASENAME', plugin_basename( $this->plugin_file ) );
+		define( $this->const . '_BASENAME', $this->plugin_basename() );
 
 		define( $this->const . '_PLUGIN_FILE',  $this->plugin_file );
 		define( $this->const . '_FILE',  $this->plugin_file );
@@ -155,7 +155,7 @@ class PluginCore{
 			register_uninstall_hook( $this->plugin_file, $this->uninstall_cb );
 
 		if ( ! empty( $this->unpgrade_cb ) )
-			add_action( 'upgrader_process_complete', $this->unpgrade_cb, 10, 2 );
+			add_action( 'upgrader_process_complete', [$this, 'upgrade_cb_wrapper'], 10, 2 );
 	}
 
 	public function title( $title=null ){
@@ -185,6 +185,7 @@ class PluginCore{
 
 		if ( empty( $this->slug ) ){
 			// get slug from plugin-file basename
+			$this->slug = basename($this->plugin_file,'.php');
 		}
 
 		return $this->slug;
@@ -207,10 +208,13 @@ class PluginCore{
 	}
 
 	public function const( $const=null ){
+		
+		// if $const provided - use that
 		if ( ! empty( $const ) ){
 			$this->const = $const;
 		}
 
+		// if no $const provided - generate from slug()
 		if ( empty( $this->const ) ){
 			$this->const = str_replace( '-', '_' , strtoupper( $this->slug() ) ); // using slug() method
 		}
@@ -229,6 +233,12 @@ class PluginCore{
 		if ( empty( $this->url ) )
 			$this->url = plugin_dir_url( $this->plugin_file );
 		return $this->url;
+	}
+
+	public function plugin_basename(){
+		if ( empty( $this->plugin_basename ) )
+			$this->plugin_basename = plugin_basename( $this->plugin_file );
+		return $this->plugin_basename;
 	}
 
 	private function activate_cb( $activate_cb ){
@@ -299,7 +309,7 @@ class PluginCore{
 		$update_checker = \Puc_v4_Factory::buildUpdateChecker(
 			$this->update_repo_uri,
 			$this->plugin_file,
-			$this->slug
+			$this->slug() // using slug()
 		);
 
 		//Optional: If you're using a private repository, specify the access token like this:
@@ -312,5 +322,26 @@ class PluginCore{
 
 	}
 
+	/**
+	 * upgrade_cb_wrapper
+	 * 
+	 * This function only called if upgrade_cb is set (@see regiseter_hooks())
+	 * This function called on upgrader_process_complete
+	 * sanity-checks if our plugin was upgraded
+	 * if so - calls upgrade_cb provided by our plugin
+	 */
+	public function upgrade_cb_wrapper( $upgrader_object, $options ){
+		if(
+			$options['action'] == 'update'  // has upgrade taken place
+			&&
+			$options['type'] == 'plugin' // is it a plugin upgrade
+			&&
+			isset( $options['plugins'] ) // is list of plugins upgraded
+			&&
+			in_array( $this->plugin_basename(), $options['plugins']) // is our plugin in that list
+		) {
+			call_user_func( [$this,'unpgrade_cb'], $upgrader_object, $options );
+		}
+	}
 
 }
