@@ -7,7 +7,7 @@
  * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
- * @version 0.12
+ * @version 0.13
  * 
  * @todo add admin menu page option
  * @todo plugin_action_links - on Plugins page
@@ -340,7 +340,7 @@ class PluginCore{
 			&&
 			in_array( $this->plugin_basename(), $options['plugins']) // is our plugin in that list
 		) {
-			call_user_func( [$this,'unpgrade_cb'], $upgrader_object, $options );
+			call_user_func( $this->unpgrade_cb, $upgrader_object, $options );
 		}
 	}
 

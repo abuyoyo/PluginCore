@@ -1,5 +1,8 @@
 # WPHelper\PluginCore Changelog
 
+## 0.13
+- Fix `upgrade_cb_wrapper` function.
+
 ## 0.12
 - Add upgrade_cb wrapper function that conducts sanity-checks before calling `upgrade_cb` callback provided.
 - Add `plugin_basename()` getter/setter function and `plugin_basename` variable.
