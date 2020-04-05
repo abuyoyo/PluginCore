@@ -7,7 +7,7 @@
  * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
- * @version 0.13
+ * @version 0.13.1
  * 
  * @todo add admin menu page option
  * @todo plugin_action_links - on Plugins page

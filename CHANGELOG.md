@@ -1,5 +1,8 @@
 # WPHelper\PluginCore Changelog
 
+## 0.13.1
+- Update `composer.json` version.
+
 ## 0.13
 - Fix `upgrade_cb_wrapper` function.
 
