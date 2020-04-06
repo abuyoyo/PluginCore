@@ -1,5 +1,8 @@
 # WPHelper\PluginCore Changelog
 
+## 0.13.3
+- Fix `upgrade_cb` function handling.
+
 ## 0.13.2
 - Fix `upgrade_cb_wrapper` function.
 

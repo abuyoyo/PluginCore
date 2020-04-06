@@ -7,7 +7,7 @@
  * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
- * @version 0.13.2
+ * @version 0.13.3
  * 
  * @todo add admin menu page option
  * @todo plugin_action_links - on Plugins page
@@ -154,7 +154,7 @@ class PluginCore{
 		if ( ! empty( $this->uninstall_cb ) )
 			register_uninstall_hook( $this->plugin_file, $this->uninstall_cb );
 
-		if ( ! empty( $this->unpgrade_cb ) )
+		if ( ! empty( $this->upgrade_cb ) )
 			add_action( 'upgrader_process_complete', [$this, 'upgrade_cb_wrapper'], 10, 2 );
 	}
 
