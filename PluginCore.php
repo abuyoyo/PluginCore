@@ -16,6 +16,9 @@
 
 namespace WPHelper;
 
+use Puc_v4_Factory;
+use function get_plugin_data;
+
 class PluginCore{
 
 	private $title; // these should be public essentially - func? var?
@@ -166,7 +169,8 @@ class PluginCore{
 		}	
 
 		if ( empty( $this->title ) ){
-			// get title from header plugin_data()
+			$this->plugin_data();
+			$this->title = $this->plugin_data['Title'];
 		}
 
 		return $this->title;
@@ -205,6 +209,14 @@ class PluginCore{
 	 */
 	public function file(){
 		return $this->plugin_file;
+	}
+
+
+	public function plugin_data(){
+		if ( empty( $this->plugin_data ) ){
+			$this->plugin_data = get_plugin_data( $this->plugin_file, false);
+		}
+		return $this->plugin_data;
 	}
 
 	public function const( $const=null ){
@@ -298,15 +310,15 @@ class PluginCore{
 			return;
 
 		if ( ! isset( $this->update_repo_uri ) ){
-			$plugin_data = get_plugin_data( $this->plugin_file , false ); // false = no markup (i think)
+			$this->plugin_data();
 			
-			if ( isset( $plugin_data['PluginURI'] ) )
-				$this->update_repo_uri = $plugin_data['PluginURI'];
+			if ( isset( $this->plugin_data['PluginURI'] ) )
+				$this->update_repo_uri = $this->plugin_data['PluginURI'];
 			else
 				return;
 		}
 		// wp_dump($this);
-		$update_checker = \Puc_v4_Factory::buildUpdateChecker(
+		$update_checker = Puc_v4_Factory::buildUpdateChecker(
 			$this->update_repo_uri,
 			$this->plugin_file,
 			$this->slug() // using slug()
