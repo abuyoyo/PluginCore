@@ -7,7 +7,7 @@
  * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
- * @version 0.13.3
+ * @version 0.14
  * 
  * @todo add admin menu page option
  * @todo plugin_action_links - on Plugins page
@@ -15,6 +15,9 @@
  */
 
 namespace WPHelper;
+
+use Puc_v4_Factory;
+use function get_plugin_data;
 
 class PluginCore{
 
@@ -33,6 +36,9 @@ class PluginCore{
 	public $uninstall_cb;
 
 	public $upgrade_cb;
+
+
+	public $admin_page;
 
 
 	/**
@@ -87,6 +93,10 @@ class PluginCore{
 			}else{
 				$this->const();
 			}
+
+			if ( isset( $options->admin_page ) ){
+				$this->admin_page( $options->admin_page );
+			}
 				
 
 			if ( isset( $options->activate_cb ) )
@@ -100,10 +110,6 @@ class PluginCore{
 
 			if ( isset( $options->upgrade_cb ) )
 				$this->upgrade_cb( $options->upgrade_cb );
-
-			if ( isset( $options->admin_menu_page ) ){
-				// new WPHelper/AdminMenuPage()
-			}
 
 			if ( isset( $options->update_checker ) ){
 				$this->update_checker( $options->update_checker );
@@ -123,14 +129,14 @@ class PluginCore{
 		$this->path();
 		$this->url();
 
-		define( $this->const . '_PATH', $this->path() );
-		define( $this->const . '_DIR', $this->path() );
+		define( $this->const() . '_PATH', $this->path() );
+		define( $this->const() . '_DIR', $this->path() );
 
-		define( $this->const . '_URL', $this->url() );
-		define( $this->const . '_BASENAME', $this->plugin_basename() );
+		define( $this->const() . '_URL', $this->url() );
+		define( $this->const() . '_BASENAME', $this->plugin_basename() );
 
-		define( $this->const . '_PLUGIN_FILE',  $this->plugin_file );
-		define( $this->const . '_FILE',  $this->plugin_file );
+		define( $this->const() . '_PLUGIN_FILE',  $this->plugin_file );
+		define( $this->const() . '_FILE',  $this->plugin_file );
 
 		$this->register_hooks();
 
@@ -166,7 +172,8 @@ class PluginCore{
 		}	
 
 		if ( empty( $this->title ) ){
-			// get title from header plugin_data()
+			$this->plugin_data();
+			$this->title = $this->plugin_data['Title'];
 		}
 
 		return $this->title;
@@ -207,6 +214,14 @@ class PluginCore{
 		return $this->plugin_file;
 	}
 
+
+	public function plugin_data(){
+		if ( empty( $this->plugin_data ) ){
+			$this->plugin_data = get_plugin_data( $this->plugin_file, false);
+		}
+		return $this->plugin_data;
+	}
+
 	public function const( $const=null ){
 		
 		// if $const provided - use that
@@ -220,6 +235,19 @@ class PluginCore{
 		}
 		
 		return $this->const;
+	}
+
+	public function admin_page( $admin_page ){
+		if ( empty( $admin_page['slug'] ) ){
+			$admin_page['slug'] = $this->slug();
+		}
+		if ( empty( $admin_page['title'] ) ){
+			$admin_page['title'] = $this->title();
+		}
+
+		$this->admin_page = new AdminMenuPage($admin_page);
+
+		return $this->admin_page;
 	}
 
 
@@ -298,15 +326,15 @@ class PluginCore{
 			return;
 
 		if ( ! isset( $this->update_repo_uri ) ){
-			$plugin_data = get_plugin_data( $this->plugin_file , false ); // false = no markup (i think)
+			$this->plugin_data();
 			
-			if ( isset( $plugin_data['PluginURI'] ) )
-				$this->update_repo_uri = $plugin_data['PluginURI'];
+			if ( isset( $this->plugin_data['PluginURI'] ) )
+				$this->update_repo_uri = $this->plugin_data['PluginURI'];
 			else
 				return;
 		}
 		// wp_dump($this);
-		$update_checker = \Puc_v4_Factory::buildUpdateChecker(
+		$update_checker = Puc_v4_Factory::buildUpdateChecker(
 			$this->update_repo_uri,
 			$this->plugin_file,
 			$this->slug() // using slug()
