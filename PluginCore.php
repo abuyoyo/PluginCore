@@ -38,6 +38,9 @@ class PluginCore{
 	public $upgrade_cb;
 
 
+	public $admin_page;
+
+
 	/**
 	 * Experimental plugin update checker
 	 * Using yahnis-elsts/plugin-update-checker
@@ -90,6 +93,10 @@ class PluginCore{
 			}else{
 				$this->const();
 			}
+
+			if ( isset( $options->admin_page ) ){
+				$this->admin_page( $options->admin_page );
+			}
 				
 
 			if ( isset( $options->activate_cb ) )
@@ -103,10 +110,6 @@ class PluginCore{
 
 			if ( isset( $options->upgrade_cb ) )
 				$this->upgrade_cb( $options->upgrade_cb );
-
-			if ( isset( $options->admin_menu_page ) ){
-				// new WPHelper/AdminMenuPage()
-			}
 
 			if ( isset( $options->update_checker ) ){
 				$this->update_checker( $options->update_checker );
@@ -232,6 +235,19 @@ class PluginCore{
 		}
 		
 		return $this->const;
+	}
+
+	public function admin_page( $admin_page ){
+		if ( empty( $admin_page['slug'] ) ){
+			$admin_page['slug'] = $this->slug();
+		}
+		if ( empty( $admin_page['title'] ) ){
+			$admin_page['title'] = $this->title();
+		}
+
+		$this->admin_page = new AdminMenuPage($admin_page);
+
+		return $this->admin_page;
 	}
 
 
