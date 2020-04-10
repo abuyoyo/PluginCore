@@ -123,14 +123,14 @@ class PluginCore{
 		$this->path();
 		$this->url();
 
-		define( $this->const . '_PATH', $this->path() );
-		define( $this->const . '_DIR', $this->path() );
+		define( $this->const() . '_PATH', $this->path() );
+		define( $this->const() . '_DIR', $this->path() );
 
-		define( $this->const . '_URL', $this->url() );
-		define( $this->const . '_BASENAME', $this->plugin_basename() );
+		define( $this->const() . '_URL', $this->url() );
+		define( $this->const() . '_BASENAME', $this->plugin_basename() );
 
-		define( $this->const . '_PLUGIN_FILE',  $this->plugin_file );
-		define( $this->const . '_FILE',  $this->plugin_file );
+		define( $this->const() . '_PLUGIN_FILE',  $this->plugin_file );
+		define( $this->const() . '_FILE',  $this->plugin_file );
 
 		$this->register_hooks();
 
