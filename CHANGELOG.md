@@ -1,5 +1,15 @@
 # WPHelper\PluginCore Changelog
 
+## 0.14
+
+### Added
+
+- Add `admin_page` option to create a WPHelper\AdminMenuPage instance.
+- Add `plugin_data` variable with WordPress core `get_plugin_data()` object. Use header data if no slug or title provided.
+
+### Fixed
+- Fix PHP defines when `const` not provided.
+
 ## 0.13.3
 - Fix `upgrade_cb` function handling.
 
