@@ -245,7 +245,7 @@ class PluginCore{
 			$admin_page['title'] = $this->title();
 		}
 
-		$this->admin_page = new AdminMenuPage($admin_page);
+		$this->admin_page = new AdminPage($admin_page);
 
 		return $this->admin_page;
 	}
