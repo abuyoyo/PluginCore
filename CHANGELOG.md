@@ -1,5 +1,12 @@
 # WPHelper\PluginCore Changelog
 
+## 0.15
+
+### Changed
+
+- Use `new WPHelper\AdminPage()` (WPHelper\AdminMenuPage >= 0.12) instead of deprecated `AdminMenuPage`.
+- Do not hook `Puc_v4_Factory::buildUpdateChecker` on `admin_init`. Run in plugin's global scope.
+
 ## 0.14
 
 ### Added

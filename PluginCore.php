@@ -145,7 +145,9 @@ class PluginCore{
 
 		if ( $this->update_checker == true ){
 			// run early - before Puc_v4p8_Scheduler->maybeCheckForUpdates() [admin_init 10]
-			add_action( 'admin_init', [$this, 'init_update_checker'], 9 );
+			// hooking on admin_init does not work with wp_plugin_updates as it requires user logged-in
+			// add_action( 'admin_init', [$this, 'init_update_checker'], 9 );
+			$this->init_update_checker();
 		}
 	}
 
@@ -245,7 +247,7 @@ class PluginCore{
 			$admin_page['title'] = $this->title();
 		}
 
-		$this->admin_page = new AdminMenuPage($admin_page);
+		$this->admin_page = new AdminPage($admin_page);
 
 		return $this->admin_page;
 	}
