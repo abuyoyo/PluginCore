@@ -366,10 +366,20 @@ class PluginCore{
 			&&
 			$options['type'] == 'plugin' // is it a plugin upgrade
 			&&
-			isset( $options['plugins'] ) // is list of plugins upgraded
-			&&
-			in_array( $this->plugin_basename(), $options['plugins']) // is our plugin in that list
-		) {
+			(
+				(
+					isset( $options['plugins'] ) // is list of plugins upgraded
+					&&
+					in_array( $this->plugin_basename(), $options['plugins']) // is our plugin in that list
+				)
+				||
+				( // single plugin updated
+					isset( $options['plugin'] )
+					&&
+					$this->plugin_basename() == $options['plugin']
+				)
+			)
+		) {;
 			call_user_func( $this->upgrade_cb, $upgrader_object, $options );
 		}
 	}
