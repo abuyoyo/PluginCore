@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.16
+
+### Fixed
+
+- Upgrade callback `upgrade_cb` will execute when only single plugin is updated.
+
 ## 0.15
 
 ### Changed
