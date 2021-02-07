@@ -1,5 +1,12 @@
 # WPHelper\PluginCore Changelog
 
+## 0.17
+
+### Added
+Release Date: Feb 7, 2021
+
+- Pass instance of `PluginCore` to `AdminPage` if current version supports it (used in Plugin Info Metabox generation).
+
 ## 0.16
 
 ### Fixed
