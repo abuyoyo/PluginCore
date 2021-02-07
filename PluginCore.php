@@ -7,7 +7,7 @@
  * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
- * @version 0.16
+ * @version 0.17
  * 
  * @todo plugin_action_links - on Plugins page
  * 
@@ -131,7 +131,7 @@ class PluginCore{
 			if ( isset( $options->admin_page ) ){
 				$this->admin_page( $options->admin_page );
 			}
-				
+
 			if ( isset( $options->activate_cb ) )
 				$this->activate_cb( $options->activate_cb );
 
