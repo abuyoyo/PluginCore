@@ -282,6 +282,10 @@ class PluginCore{
 
 		$this->admin_page = new AdminPage($admin_page);
 
+		if ( method_exists( $this->admin_page, 'plugin_core' ) ){
+			$this->admin_page->plugin_core( $this );
+		}
+
 		return $this->admin_page;
 	}
 
