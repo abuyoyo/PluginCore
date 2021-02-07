@@ -9,7 +9,6 @@
  * 
  * @version 0.16
  * 
- * @todo add admin menu page option
  * @todo plugin_action_links - on Plugins page
  * 
  */
@@ -21,36 +20,69 @@ use function get_plugin_data;
 
 class PluginCore{
 
-	private $title; // these should be public essentially - func? var?
-
-	private $slug;
-
-	private $plugin_file;
-
-	private $const;
-
-	public $activate_cb;
-
-	public $deactivate_cb;
-
-	public $uninstall_cb;
-
-	public $upgrade_cb;
-
-
-	public $admin_page;
-
+	/**
+	 * @var string 
+	 */
+	private $title;
 
 	/**
-	 * Experimental plugin update checker
-	 * Using yahnis-elsts/plugin-update-checker
+	 * @var string 
+	 */
+	private $slug;
+
+	/**
+	 * @var string Plugin filename
+	 */
+	private $plugin_file;
+
+	/**
+	 * @var string 
+	 */
+	private $const;
+
+	/**
+	 * @var callable 
+	 */
+	public $activate_cb;
+
+	/**
+	 * @var callable 
+	 */
+	public $deactivate_cb;
+
+	/**
+	 * @var callable 
+	 */
+	public $uninstall_cb;
+
+	/**
+	 * @var callable 
+	 */
+	public $upgrade_cb;
+
+	/**
+	 * @var AdminPage
+	 */
+	public $admin_page;
+
+	/**
+	 * @var \Puc_v4p10_Plugin_UpdateChecker
 	 */
 	private $update_checker;
 
+	/**
+	 * @var string Repo uri
+	 */
 	private $update_repo_uri;
-	
+
+	/**
+	 * @var string Repo authentication key
+	 */
 	private $update_auth;
 	
+	/**
+	 * @var string Repo branch
+	 */
 	private $update_branch;
 
 
@@ -58,6 +90,8 @@ class PluginCore{
 	/**
 	 * Static array of all PluginCore instances
 	 * Used in PluginCore::get($slug)
+	 * 
+	 * @var array[PluginCore] Instances of PluginCore
 	 */
 	static $cores = [];
 
@@ -98,7 +132,6 @@ class PluginCore{
 				$this->admin_page( $options->admin_page );
 			}
 				
-
 			if ( isset( $options->activate_cb ) )
 				$this->activate_cb( $options->activate_cb );
 
