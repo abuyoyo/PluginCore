@@ -9,6 +9,10 @@ use function register_activation_hook;
 use function register_deactivation_hook;
 use function register_uninstall_hook;
 
+if( ! function_exists('get_plugin_data') ){
+	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+}
+
 
 /**
  * PluginCore
