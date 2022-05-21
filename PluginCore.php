@@ -13,7 +13,7 @@ if( ! function_exists('get_plugin_data') ){
 	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 }
 
-
+if ( ! class_exists( 'WPHelper/PluginCore' ) ):
 /**
  * PluginCore
  * 
@@ -428,3 +428,4 @@ class PluginCore{
 	}
 
 }
+endif;
