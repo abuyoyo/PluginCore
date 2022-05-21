@@ -1,4 +1,15 @@
 <?php
+namespace WPHelper;
+
+use Puc_v4_Factory;
+
+use function add_action;
+use function get_plugin_data;
+use function register_activation_hook;
+use function register_deactivation_hook;
+use function register_uninstall_hook;
+
+
 /**
  * PluginCore
  * 
@@ -12,12 +23,6 @@
  * @todo plugin_action_links - on Plugins page
  * 
  */
-
-namespace WPHelper;
-
-use Puc_v4_Factory;
-use function get_plugin_data;
-
 class PluginCore{
 
 	/**
@@ -118,9 +123,6 @@ class PluginCore{
 			}else{
 				$this->slug(); // guess slug from plugin basename
 			}
-			
-			// if ( ! isset( $options->const ) )
-			// 	$options->const = str_replace( '-', '_' , strtoupper( $options->slug ) );
 			
 			if ( isset( $options->const ) ){
 				$this->const( $options->const );
@@ -416,7 +418,7 @@ class PluginCore{
 					$this->plugin_basename() == $options['plugin']
 				)
 			)
-		) {;
+		) {
 			call_user_func( $this->upgrade_cb, $upgrader_object, $options );
 		}
 	}
