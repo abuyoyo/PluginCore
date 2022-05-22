@@ -1,9 +1,21 @@
 # WPHelper\PluginCore Changelog
 
+## 0.18
+Release Date: May 22, 2022
+
+### Changed
+
+- Class `PluginCore` is pluggable.
+- Prevent direct PHP script execution if not accessed within the WordPress environment.
+
+### Fixed
+
+- Include `plugin.php` if function `get_plugin_data` does not exist. This could case critical failure.
+
 ## 0.17
+Release Date: Feb 7, 2021
 
 ### Added
-Release Date: Feb 7, 2021
 
 - Pass instance of `PluginCore` to `AdminPage` if current version supports it (used in Plugin Info Metabox generation).
 
