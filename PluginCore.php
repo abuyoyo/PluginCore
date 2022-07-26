@@ -112,7 +112,7 @@ class PluginCore {
 	 * @return PluginCore - Instance of specific plugin.
 	 */
 	static public function get( $slug ) {
-		return self::$cores[$slug] ? self::$cores[$slug] : null;
+		return self::$cores[ $slug ] ?? null;
 	}
 
 	function __construct( $plugin_file, $options = null ) {
@@ -258,15 +258,8 @@ class PluginCore {
 	 * @return string      $this->slug
 	 */
 	public function slug( $slug = null ) {
-		if ( ! empty( $slug ) )
-			$this->slug = $slug;
-
-		if ( empty( $this->slug ) ){
-			// get slug from plugin-file basename
-			$this->slug = basename($this->plugin_file,'.php');
-		}
-
-		return $this->slug;
+		// doing it this way means slug can only be set once.
+		return $this->slug ??= $slug ?: basename( $this->plugin_file, '.php' );
 	}
 
 	/**
