@@ -7,7 +7,7 @@ Plugin Boilerplates and boilerplate generator are a hassle. The file structure t
 [WPHelper\AdminMenuPage](https://github.com/abuyoyo/AdminMenuPage) can be used to register and generate admin menus if your plugin requires that.
 
 ## Requirements
-* PHP >=5.6
+* PHP >= 7.4
 * [Composer](https://getcomposer.org/)
 * [WordPress](https://wordpress.org)
 

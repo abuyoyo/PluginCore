@@ -2,12 +2,12 @@
 	"name": "abuyoyo/plugincore",
 	"description": "WordPress plugin core helper class",
 	"type": "library",
-	"version": "0.18",
-	"time": "2022-05-22",
+	"version": "0.19",
+	"time": "2022-07-27",
 	"license": "BSD-3-Clause",
 	"require": {
-		"yahnis-elsts/plugin-update-checker": "~4.7",
-		"abuyoyo/adminmenupage": "~0.12"
+		"yahnis-elsts/plugin-update-checker": "~4.12",
+		"abuyoyo/adminmenupage": "~0.19"
 	},
 	"autoload": {
 		"psr-4": {
