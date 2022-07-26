@@ -1,5 +1,13 @@
 # WPHelper\PluginCore Changelog
 
+## 0.19
+Release Date: Jul 27, 2022
+
+### Changed
+
+- Update `composer.json` dependencies.
+- Require PHP >= 7.4
+
 ## 0.18
 Release Date: May 22, 2022
 

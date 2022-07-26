@@ -24,7 +24,7 @@ if ( ! class_exists( 'WPHelper/PluginCore' ) ):
  * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
- * @version 0.17
+ * @version 0.19
  * 
  * @todo plugin_action_links - on Plugins page
  */
