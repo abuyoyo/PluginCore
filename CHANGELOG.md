@@ -1,5 +1,12 @@
 # WPHelper\PluginCore Changelog
 
+## 0.20
+Release Date: Jul 29, 2022
+
+### Changed
+
+- Update `composer.json` dependencies - `abuyoyo/adminmenupage ~0.20`.
+
 ## 0.19
 Release Date: Jul 27, 2022
 
