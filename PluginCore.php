@@ -229,8 +229,11 @@ class PluginCore {
 
 	/**
 	 * Wrapper function for $this->title()
+	 * 
+	 * @deprecated
 	 */
 	public function name( $title = null ) {
+		_doing_it_wrong( __METHOD__, 'Use PluginCore::title instead.', '0.21' );
 		return $this->title( $title );
 	}
 
