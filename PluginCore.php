@@ -158,39 +158,45 @@ class PluginCore {
 
 		}
 		
-		$this->setup();
+		$this->bootstrap();
 
 	}
 
 	/**
+	 * Bootstrap
+	 * 
+	 * Setup url, path, plugin_basename variables
+	 * Add PluginCore instance to static $cores
 	 * Define plugin constants (_PATH, _URL, _BASENAME, _FILE etc.)
 	 * Register activation, deactivation, uninstall, upgrade hooks.
 	 * Init PUC update checker.
-	 * Add PluginCore instance to static $cores
 	 * 
-	 * @todo rename method bootstrap()
 	 * @todo set plugin_dir_path, plugin_basename as accessible public variables (available thru methods atm)
 	 */
-	function setup() {
+	private function bootstrap() {
 
-		// init path and url
-		// redundant init() and path() are getter/setter methods.
+		// set variables
 		$this->path();
 		$this->url();
+		$this->plugin_basename();
 
-		define( $this->const() . '_PATH', $this->path() );
-		define( $this->const() . '_DIR', $this->path() );
+		/**
+		 * Add this PluginCore instance to static list of PluginCore instances (key = slug).
+		 * @see static function get()
+		 */
+		self::$cores[ $this->slug ] = $this;
 
-		define( $this->const() . '_URL', $this->url() );
-		define( $this->const() . '_BASENAME', $this->plugin_basename() );
+		// define constants
+		define( $this->const . '_PATH', $this->path );
+		define( $this->const . '_DIR', $this->path );
 
-		define( $this->const() . '_PLUGIN_FILE',  $this->plugin_file );
-		define( $this->const() . '_FILE',  $this->plugin_file );
+		define( $this->const . '_URL', $this->url );
+		define( $this->const . '_BASENAME', $this->plugin_basename );
+
+		define( $this->const . '_PLUGIN_FILE',  $this->plugin_file );
+		define( $this->const . '_FILE',  $this->plugin_file );
 
 		$this->register_hooks();
-
-		self::$cores[ $this->slug() ] = $this; // using slug() method
-
 
 		if ( $this->update_checker === true ) {
 			$this->build_update_checker();
