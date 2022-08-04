@@ -377,17 +377,19 @@ class PluginCore {
 	 * @return AdminPage
 	 */
 	public function admin_page( $admin_page ) {
-		if ( empty( $admin_page['slug'] ) ) {
-			$admin_page['slug'] = $this->slug();
-		}
-		if ( empty( $admin_page['title'] ) ) {
-			$admin_page['title'] = $this->title();
-		}
+
+		if ( ! class_exists( 'WPHelper\AdminPage' ) )
+			return;
+
+		// validate
+		$admin_page['slug'] ??= $this->slug();
+		$admin_page['title'] ??= $this->title();
 
 		$this->admin_page = new AdminPage( $admin_page );
 
+		// validate for older versions of AdminPage
 		if ( method_exists( $this->admin_page, 'plugin_core' ) ) {
-			$this->admin_page->plugin_core( $this );
+			$this->admin_page->plugin_core( $this ); // back-reference
 		}
 
 		return $this->admin_page;
