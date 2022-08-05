@@ -19,8 +19,6 @@ if ( ! class_exists( 'WPHelper/PluginCore' ) ):
  * (@see README.md)
  * 
  * @version 0.20
- * 
- * @todo plugin_action_links - on Plugins page
  */
 class PluginCore {
 
@@ -78,6 +76,11 @@ class PluginCore {
 	 * @var callable 
 	 */
 	public $upgrade_cb;
+
+	/**
+	 * @var array|callable
+	 */
+	public $action_links;
 
 	/**
 	 * @var AdminPage
@@ -150,6 +153,9 @@ class PluginCore {
 			if ( isset( $options->upgrade_cb ) )
 				$this->upgrade_cb( $options->upgrade_cb );
 
+			if ( isset( $options->action_links ) )
+				$this->action_links( $options->action_links );
+
 			if ( isset( $options->admin_page ) )
 				$this->admin_page( $options->admin_page ); // creates AdminPage instance
 
@@ -202,6 +208,8 @@ class PluginCore {
 		define( $this->const . '_FILE',  $this->plugin_file );
 
 		$this->register_hooks();
+
+		$this->add_plugin_action_links();
 
 		if ( $this->update_checker === true ) {
 			$this->build_update_checker();
@@ -376,6 +384,27 @@ class PluginCore {
 	}
 
 	/**
+	 * Setter - Plugin action links
+	 * 
+	 * Add links to plugin action links on Plugins page.
+	 * Accepts callable hooked to 'plugin_action_links_{$plugin}'
+	 * Alternatively accepts array of key => string/HTML tag (eg. [ 'settings' => '<a href="foo" />' ] )
+	 * Alternatively accepts array of key => [ 'text' => 'My Link', 'href' => 'foo' ]
+	 * Special case: Settings Page
+	 * [ 'settings' => [ 'href' => 'menu_page', 'text' => 'Settings' ] ] will generate link to plugin menu page url (@see menu_page_url() )
+	 * (@see add_plugin_action_links() below)
+	 * 
+	 * @since 0.21
+	 * 
+	 * @param callable|array $action_links - filter function or custom action links array
+	 * 
+	 * @todo perhaps have separate action_links_array + action_links_cb variables
+	 */
+	private function action_links( $action_links ) {
+		$this->action_links = $action_links;
+	}
+
+	/**
 	 * Getter/Setter - AdminPage
 	 * 
 	 * Construct AdminPage instance for plugin. 
@@ -514,6 +543,45 @@ class PluginCore {
 		) {
 			call_user_func( $this->upgrade_cb, $upgrader_object, $options );
 		}
+	}
+
+	/**
+	 * Add plugin_action_links
+	 * 
+	 * Parse action_links (callable or array).
+	 * Generate callback if action_links provided as array.
+	 * Add callback to 'plugin_action_links_{$plugin}' hook.
+	 * 
+	 * @since 0.21
+	 * 
+	 * @access private
+	 */
+	private function add_plugin_action_links() {
+		if ( empty( $this->action_links ) )
+			return;
+
+		if ( is_callable( $this->action_links ) ) { // default - pass a filter method
+			$action_links_cb =  $this->action_links;
+		} else if ( is_array( $this->action_links ) ) { // array of links - PluginCore will do the heavy lifting
+			$action_links_cb = function( $links ) {
+				foreach( $this->action_links as $key => $link ) {
+					if ( is_string( $link ) ) { // we assume a straight HTML tag string
+						$links[ $key ] = $link; // just print it
+					} else if ( is_array( $link ) ) { // accepts ['href'=>'/my-href', 'text'=>'My Action Link']
+						$links[ $key ] = sprintf(
+							'<a href="%s">%s</a>',
+							$link['href'] == 'menu_page' // reserved parameter value
+								? esc_url( menu_page_url( $this->slug, false ) )
+								: $link['href'],
+							$link['text'],
+						);
+					}
+				}
+				return $links;
+			};
+		}
+
+		add_filter( 'plugin_action_links_' . $this->plugin_basename(), $action_links_cb );
 	}
 
 }
