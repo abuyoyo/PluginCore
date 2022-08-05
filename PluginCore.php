@@ -3,12 +3,6 @@ namespace WPHelper;
 
 use Puc_v4_Factory;
 
-use function add_action;
-use function get_plugin_data;
-use function register_activation_hook;
-use function register_deactivation_hook;
-use function register_uninstall_hook;
-
 defined( 'ABSPATH' ) || die( 'No soup for you!' );
 
 if( ! function_exists('get_plugin_data') ) {
@@ -31,6 +25,11 @@ if ( ! class_exists( 'WPHelper/PluginCore' ) ):
 class PluginCore {
 
 	/**
+	 * @var string Plugin filename
+	 */
+	private $plugin_file;
+
+	/**
 	 * @var string 
 	 */
 	private $title;
@@ -41,14 +40,24 @@ class PluginCore {
 	private $slug;
 
 	/**
-	 * @var string Plugin filename
+	 * @var string 
 	 */
-	private $plugin_file;
+	private $const;
 
 	/**
 	 * @var string 
 	 */
-	private $const;
+	private $path;
+
+	/**
+	 * @var string 
+	 */
+	private $url;
+
+	/**
+	 * @var string 
+	 */
+	private $plugin_basename;
 
 	/**
 	 * @var callable 
@@ -141,10 +150,6 @@ class PluginCore {
 				$this->const();
 			}
 
-			if ( isset( $options->admin_page ) ) {
-				$this->admin_page( $options->admin_page );
-			}
-
 			if ( isset( $options->activate_cb ) )
 				$this->activate_cb( $options->activate_cb );
 
@@ -157,9 +162,12 @@ class PluginCore {
 			if ( isset( $options->upgrade_cb ) )
 				$this->upgrade_cb( $options->upgrade_cb );
 
-			if ( isset( $options->update_checker ) ) {
+			if ( isset( $options->admin_page ) )
+				$this->admin_page( $options->admin_page ); // creates AdminPage instance
+
+			if ( isset( $options->update_checker ) )
 				$this->update_checker( $options->update_checker );
-			}
+
 		}
 		
 		$this->setup();
@@ -258,7 +266,6 @@ class PluginCore {
 	 * @return string      $this->slug
 	 */
 	public function slug( $slug = null ) {
-		// doing it this way means slug can only be set once.
 		return $this->slug ??= $slug ?: basename( $this->plugin_file, '.php' );
 	}
 
@@ -286,6 +293,9 @@ class PluginCore {
 	}
 
 
+	/**
+	 * Getter/Setter - plugin data array
+	 */
 	public function plugin_data() {
 		if ( empty( $this->plugin_data ) ) {
 			$this->plugin_data = get_plugin_data( $this->plugin_file, false);
@@ -296,9 +306,9 @@ class PluginCore {
 	/**
 	 * Getter/Setter - const
 	 * Prefix of plugin specific defines (PLUGIN_NAME_PATH etc.)
-	 * If not provided - plugin slug will be uppercased.
+	 * If not provided - plugin slug will be uppercase.
 	 * 
-	 * @param  string|null $const (string should be uppercased)
+	 * @param  string|null $const (string should be uppercase)
 	 * @return string      $this->const
 	 */
 	public function const( $const = null ) {
@@ -316,6 +326,97 @@ class PluginCore {
 		return $this->const;
 	}
 
+	/**
+	 * Getter/setter
+	 */
+	public function path() {
+		if ( empty( $this->path ) )
+			$this->path = plugin_dir_path( $this->plugin_file );
+		return $this->path;
+	}
+
+	/**
+	 * Getter/Setter
+	 */
+	public function url() {
+		if ( empty( $this->url ) )
+			$this->url = plugin_dir_url( $this->plugin_file );
+		return $this->url;
+	}
+
+	/**
+	 * Getter/Setter
+	 */
+	public function plugin_basename() {
+		if ( empty( $this->plugin_basename ) )
+			$this->plugin_basename = plugin_basename( $this->plugin_file );
+		return $this->plugin_basename;
+	}
+
+	/**
+	 * Setter - Activation callback
+	 * Callback runs on 'register_activation_hook'
+	 * PluginCore does not validate. Authors must ensure valid callback.
+	 * 
+	 * @param callable $activate_cb - Activation callback
+	 * 
+	 * @access private
+	 */
+	private function activate_cb( $activate_cb ) {
+		$this->activate_cb = $activate_cb;
+	}
+
+	/**
+	 * Setter - Deactivation callback
+	 * Callback runs on 'register_deactivation_hook'
+	 * PluginCore does not validate. Authors must ensure valid callback.
+	 * 
+	 * @param callable $deactivate_cb - Deactivation callback.
+	 * 
+	 * @access private
+	 */
+	private function deactivate_cb( $deactivate_cb ) {
+		$this->deactivate_cb = $deactivate_cb;
+	}
+
+	/**
+	 * Setter - Uninstall callback
+	 * Callback runs on 'register_uninstall_hook'
+	 * PluginCore does not validate. Authors must ensure valid callback.
+	 * 
+	 * @param callable $uninstall_cb - Uninstall callback.
+	 * 
+	 * @access private
+	 */
+	private function uninstall_cb( $uninstall_cb ) {
+		$this->uninstall_cb = $uninstall_cb;
+	}
+
+	/**
+	 * Setter - Upgrade callback
+	 * Callback runs on 'upgrader_process_complete' hook - only for our plugin.
+	 * Runs inside wrapper function that ensures our plugin was updated. 
+	 * (@see upgrade_cb_wrapper() below)
+	 * 
+	 * PluginCore does not validate. Authors must ensure valid callback.
+	 * 
+	 * @param callable $upgrade_cb - Upgrade callback.
+	 * 
+	 * @access private
+	 */
+	private function upgrade_cb( $upgrade_cb ) {
+		$this->upgrade_cb = $upgrade_cb;
+	}
+
+	/**
+	 * Getter/Setter - AdminPage
+	 * 
+	 * Construct AdminPage instance for plugin. 
+	 * 
+	 * @param array $admin_page - AdminPage settings array
+	 * 
+	 * @return AdminPage
+	 */
 	public function admin_page( $admin_page ) {
 		if ( empty( $admin_page['slug'] ) ) {
 			$admin_page['slug'] = $this->slug();
@@ -333,45 +434,16 @@ class PluginCore {
 		return $this->admin_page;
 	}
 
-
-	public function path() {
-		if ( empty( $this->path ) )
-			$this->path = plugin_dir_path( $this->plugin_file );
-		return $this->path;
-	}
-
-	public function url() {
-		if ( empty( $this->url ) )
-			$this->url = plugin_dir_url( $this->plugin_file );
-		return $this->url;
-	}
-
-	public function plugin_basename() {
-		if ( empty( $this->plugin_basename ) )
-			$this->plugin_basename = plugin_basename( $this->plugin_file );
-		return $this->plugin_basename;
-	}
-
-	private function activate_cb( $activate_cb ) {
-		// test is_callable() ? or is it too soon?
-		$this->activate_cb = $activate_cb;
-	}
-
-	private function deactivate_cb( $deactivate_cb ) {
-		// test is_callable() ? or is it too soon?
-		$this->deactivate_cb = $deactivate_cb;
-	}
-
-	private function uninstall_cb( $uninstall_cb ) {
-		// test is_callable() ? or is it too soon?
-		$this->uninstall_cb = $uninstall_cb;
-	}
-
-	private function upgrade_cb( $upgrade_cb ) {
-		// test is_callable() ? or is it too soon?
-		$this->upgrade_cb = $upgrade_cb;
-	}
-
+	/**
+	 * Setter
+	 * 
+	 * Setup info used by Puc_v4_Factory
+	 * 
+	 * set $update_checker
+	 * set $update_repo_uri
+	 * set $update_auth
+	 * set $update_branch
+	 */
 	private function update_checker( $update_checker ) {
 		// Puc_v4_Factory::buildUpdateChecker
 		if ( empty( $update_checker ) ) {
@@ -403,7 +475,10 @@ class PluginCore {
 		}
 	}
 
-	public function init_update_checker() {
+	/**
+	 * Init Puc update checker repo URI
+	 */
+	private function init_update_checker() {
 	
 		if ( ! class_exists('Puc_v4_Factory') )
 			return;
@@ -416,7 +491,7 @@ class PluginCore {
 			else
 				return;
 		}
-		// wp_dump($this);
+
 		$update_checker = Puc_v4_Factory::buildUpdateChecker(
 			$this->update_repo_uri,
 			$this->plugin_file,
