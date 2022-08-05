@@ -1,5 +1,17 @@
 # WPHelper\PluginCore Changelog
 
+## 0.21
+Release Date: Aug 5, 2022
+
+### Added
+
+- Add `action_links` option. Accepts standard `plugin_action_links_` callback filter function. Alternatively accepts array of links. links can be HTML tag strings (`'<a href="/link">Link</a>'`) or arrays with keys `href` and `text`. Special use case `'href' => 'menu_page'` available for quick Settings link generation.
+
+### Changed
+- Plugin updater - prefer plugin header `Update URI` for plugin update checker, if no URI provided in options.
+- Validate class `WPHelper\AdminPage` exists - required for `admin_page` option/settings.
+- Significant code cleanup, notes, doc blocks and reorganizing of PluginCore class.
+
 ## 0.20
 Release Date: Jul 29, 2022
 
@@ -87,7 +99,7 @@ Release Date: Feb 7, 2021
 - Fix wrong `plugin_basename` constant.
 
 ## 0.7
-- Don't use `extarct` in constructor
+- Don't use `extract` in constructor
 - Add sanity checks and normalize getter/setter functions
 - Add `file()` getter function.
 
