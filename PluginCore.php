@@ -132,23 +132,11 @@ class PluginCore {
 
 			$options = (object) $options;
 
-			if ( isset( $options->title ) ) {
-				$this->title( $options->title );
-			}else{
-				$this->title(); // get title from header plugin_data
-			}
+			$this->title( $options->title ?? null ); // fallback: get title from header plugin_data
 
-			if ( isset( $options->slug ) ) {
-				$this->slug( $options->slug );
-			}else{
-				$this->slug(); // guess slug from plugin basename
-			}
-			
-			if ( isset( $options->const ) ) {
-				$this->const( $options->const );
-			}else{
-				$this->const();
-			}
+			$this->slug( $options->slug ?? null ); // fallback: guess slug from plugin basename
+
+			$this->const( $options->const ?? null ); // fallback: generate const from slug
 
 			if ( isset( $options->activate_cb ) )
 				$this->activate_cb( $options->activate_cb );
@@ -236,18 +224,7 @@ class PluginCore {
 	 * @return string      $this->title
 	 */
 	public function title( $title = null ) {
-		
-		if ( ! empty( $title ) ) {
-			$title = esc_html( $title );
-			$this->title = $title;
-		}	
-
-		if ( empty( $this->title ) ) {
-			$this->plugin_data();
-			$this->title = $this->plugin_data['Title'];
-		}
-
-		return $this->title;
+		return $this->title ??= esc_html( $title ) ?: $this->plugin_data()['Title'];
 	}
 
 	/**
@@ -277,8 +254,7 @@ class PluginCore {
 	 * @return string $this->plugin_file
 	 */
 	public function plugin_file( $plugin_file ) {
-		$this->plugin_file = $plugin_file;
-		return $this->plugin_file;
+		return $this->plugin_file ??= $plugin_file;
 	}
 
 	/**
@@ -297,10 +273,7 @@ class PluginCore {
 	 * Getter/Setter - plugin data array
 	 */
 	public function plugin_data() {
-		if ( empty( $this->plugin_data ) ) {
-			$this->plugin_data = get_plugin_data( $this->plugin_file, false);
-		}
-		return $this->plugin_data;
+		return $this->plugin_data ??= get_plugin_data( $this->plugin_file, false);
 	}
 
 	/**
@@ -312,45 +285,28 @@ class PluginCore {
 	 * @return string      $this->const
 	 */
 	public function const( $const = null ) {
-		
-		// if $const provided - use that
-		if ( ! empty( $const ) ) {
-			$this->const = $const;
-		}
-
-		// if no $const provided - generate from slug()
-		if ( empty( $this->const ) ) {
-			$this->const = str_replace( '-', '_' , strtoupper( $this->slug() ) ); // using slug() getter/setter
-		}
-		
-		return $this->const;
+		return $this->const ??= $const ?: str_replace( '-', '_' , strtoupper( $this->slug() ) );
 	}
 
 	/**
 	 * Getter/setter
 	 */
 	public function path() {
-		if ( empty( $this->path ) )
-			$this->path = plugin_dir_path( $this->plugin_file );
-		return $this->path;
+		return $this->path ??= plugin_dir_path( $this->plugin_file );
 	}
 
 	/**
 	 * Getter/Setter
 	 */
 	public function url() {
-		if ( empty( $this->url ) )
-			$this->url = plugin_dir_url( $this->plugin_file );
-		return $this->url;
+		return $this->url ??= plugin_dir_url( $this->plugin_file );
 	}
 
 	/**
 	 * Getter/Setter
 	 */
 	public function plugin_basename() {
-		if ( empty( $this->plugin_basename ) )
-			$this->plugin_basename = plugin_basename( $this->plugin_file );
-		return $this->plugin_basename;
+		return $this->plugin_basename ??= plugin_basename( $this->plugin_file );
 	}
 
 	/**
