@@ -175,6 +175,11 @@ class PluginCore {
 	 */
 	private function bootstrap() {
 
+		// validate basic variables (in case no options array were given)
+		$this->title();
+		$this->slug();
+		$this->const();
+
 		// set variables
 		$this->path();
 		$this->url();
