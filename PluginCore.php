@@ -192,11 +192,8 @@ class PluginCore {
 		self::$cores[ $this->slug() ] = $this; // using slug() method
 
 
-		if ( $this->update_checker == true ) {
-			// run early - before Puc_v4p8_Scheduler->maybeCheckForUpdates() [admin_init 10]
-			// hooking on admin_init does not work with wp_plugin_updates as it requires user logged-in
-			// add_action( 'admin_init', [$this, 'init_update_checker'], 9 );
-			$this->init_update_checker();
+		if ( $this->update_checker === true ) {
+			$this->build_update_checker();
 		}
 	}
 
@@ -400,58 +397,65 @@ class PluginCore {
 	 * 
 	 * Setup info used by Puc_v4_Factory
 	 * 
-	 * set $update_checker
-	 * set $update_repo_uri
-	 * set $update_auth
-	 * set $update_branch
+	 * set $update_checker (bool)
+	 * set $update_repo_uri (string)
+	 * set $update_auth (optional)
+	 * set $update_branch (optional)
+	 * 
+	 * @param bool|string|array $update_checker
 	 */
 	private function update_checker( $update_checker ) {
-		// Puc_v4_Factory::buildUpdateChecker
+
 		if ( empty( $update_checker ) ) {
 			$this->update_checker = false;
-		}else{
-			if ( is_bool( $update_checker ) ) {
-				$this->update_checker = $update_checker;
+		}
+
+		if ( is_bool( $update_checker ) ) {
+			$this->update_checker = $update_checker;
+		}
+
+		// option 'update_checker' accepts string - repo uri
+		if ( is_string( $update_checker ) ) {
+			$this->update_checker = true;
+			$this->update_repo_uri = $update_checker;
+		}
+
+		// option 'update_checker' accepts array: ['uri'=> , 'auth'=>, 'branch'=> ]
+		if ( is_array( $update_checker ) ) {
+			$this->update_checker = true;
+
+			if ( isset( $update_checker['uri'] ) ) {
+				$this->update_repo_uri = $update_checker['uri'];
 			}
-
-			if ( is_string( $update_checker ) ) {
-				$this->update_checker = true;
-				$this->update_repo_uri = $update_checker;
+			if ( isset( $update_checker['auth'] ) ) {
+				$this->update_auth = $update_checker['auth'];
 			}
-
-			if ( is_array( $update_checker ) ) {
-				$this->update_checker = true;
-
-				if ( isset( $update_checker['uri'] ) ) {
-					$this->update_repo_uri = $update_checker['uri'];
-				}
-				if ( isset( $update_checker['auth'] ) ) {
-					$this->update_auth = $update_checker['auth'];
-				}
-
-				if ( isset( $update_checker['branch'] ) ) {
-					$this->update_branch = $update_checker['branch'];
-				}
+			if ( isset( $update_checker['branch'] ) ) {
+				$this->update_branch = $update_checker['branch'];
 			}
 		}
+
+		// Use plugin header 'UpdateURI' or fallback to 'PluginURI'
+		// call plugin_data() to init var plugin_data
+		$this->update_repo_uri ??= $this->plugin_data()['UpdateURI'] ?: $this->plugin_data['PluginURI'] ?: null;
+
+		// validate
+		// If no repo uri - update checker is disabled.
+		if ( empty( $this->update_repo_uri ) ) {
+			$this->update_checker = false;
+		}
+		
 	}
 
 	/**
-	 * Init Puc update checker repo URI
+	 * Init Puc update checker instance
+	 * 
+	 * @uses Puc_v4_Factory::buildUpdateChecker
 	 */
-	private function init_update_checker() {
+	private function build_update_checker() {
 	
 		if ( ! class_exists('Puc_v4_Factory') )
 			return;
-
-		if ( ! isset( $this->update_repo_uri ) ) {
-			$this->plugin_data();
-			
-			if ( isset( $this->plugin_data['PluginURI'] ) )
-				$this->update_repo_uri = $this->plugin_data['PluginURI'];
-			else
-				return;
-		}
 
 		$update_checker = Puc_v4_Factory::buildUpdateChecker(
 			$this->update_repo_uri,
