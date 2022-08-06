@@ -5,7 +5,7 @@
 	"version": "0.22",
 	"time": "2022-08-05",
 	"license": "BSD-3-Clause",
-	"recommend": {
+	"suggest": {
 		"yahnis-elsts/plugin-update-checker": "~4.12",
 		"abuyoyo/adminmenupage": "~0.20"
 	},
