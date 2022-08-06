@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.23
+Release Date: Aug 8, 2022
+
+### Fixed
+- Minor fixes.
+
 ## 0.22
 Release Date: Aug 8, 2022
 
