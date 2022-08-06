@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.22
+Release Date: Aug 8, 2022
+
+### Removed
+- Remove all dependencies. No require.
+
 ## 0.21
 Release Date: Aug 5, 2022
 
