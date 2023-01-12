@@ -5,17 +5,18 @@ use Puc_v4_Factory;
 
 defined( 'ABSPATH' ) || die( 'No soup for you!' );
 
+if ( ! class_exists( 'WPHelper/PluginCore' ) ):
+
+// require dependency get_plugin_data()
 if( ! function_exists('get_plugin_data') ) {
-	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 }
 
-if ( ! class_exists( 'WPHelper/PluginCore' ) ):
 /**
  * PluginCore
  * 
  * Helper Class for creating WordPress Plugins
  * 
- * Defines PLUGIN_PATH, PLUGIN_URL (etc.) constants
  * (@see README.md)
  * 
  * @version 0.23
@@ -107,18 +108,19 @@ class PluginCore {
 	 */
 	private $update_branch;
 
-
-
 	/**
 	 * Static array of all PluginCore instances
 	 * Used in PluginCore::get($slug)
 	 * 
 	 * @var array[PluginCore] Instances of PluginCore
 	 */
-	static $cores = [];
+	private static $cores = [];
+
 
 	/**
 	 * Retrieve instance of PluginCore by plugin slug.
+	 * 
+	 * @since 0.5
 	 * 
 	 * @param string $slug - Plugin slug
 	 * @return PluginCore - Instance of specific plugin.
@@ -127,6 +129,12 @@ class PluginCore {
 		return self::$cores[ $slug ] ?? null;
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @since 0.1
+	 * @since 0.2 Accept filename as first param and options array as optional param
+	 */
 	function __construct( $plugin_file, $options = null ) {
 
 		$this->plugin_file( $plugin_file );
@@ -177,6 +185,9 @@ class PluginCore {
 	 * Register activation, deactivation, uninstall, upgrade hooks.
 	 * Init PUC update checker.
 	 * 
+	 * @since 0.1  setup()
+	 * @since 0.21 bootstrap()
+	 * 
 	 * @todo set plugin_dir_path, plugin_basename as accessible public variables (available thru methods atm)
 	 */
 	private function bootstrap() {
@@ -216,6 +227,11 @@ class PluginCore {
 		}
 	}
 
+	/**
+	 * Register activation/deactivation/uninstall/upgrade hooks
+	 * 
+	 * @since 0.5
+	 */
 	private function register_hooks() {
 
 		if ( ! empty( $this->activate_cb ) ) // && is_callable() ?
@@ -236,6 +252,8 @@ class PluginCore {
 	 * Plugin title.
 	 * If none provided - plugin header Title will be used.
 	 * 
+	 * @since 0.1
+	 * 
 	 * @param  string|null $title
 	 * @return string      $this->title
 	 */
@@ -245,6 +263,8 @@ class PluginCore {
 
 	/**
 	 * Wrapper function for $this->title()
+	 * 
+	 * @since 0.6
 	 * 
 	 * @deprecated
 	 */
@@ -258,6 +278,8 @@ class PluginCore {
 	 * Plugin slug.
 	 * If none provided - plugin file basename will be used
 	 * 
+	 * @since 0.1
+	 * 
 	 * @param  string|null $slug
 	 * @return string      $this->slug
 	 */
@@ -268,6 +290,8 @@ class PluginCore {
 	/**
 	 * Setter - plugin_file (also Getter - kinda)
 	 * Plugin file fully qualified path.
+	 * 
+	 * @since 0.1
 	 * 
 	 * @param  string $plugin_file - Path to plugin file
 	 * @return string $this->plugin_file
@@ -281,6 +305,8 @@ class PluginCore {
 	 * Might have to rethink this
 	 * used by test-plugin update_checker
 	 * 
+	 * @since 0.7
+	 * 
 	 * @todo revisit this
 	 */
 	public function file() {
@@ -290,15 +316,19 @@ class PluginCore {
 
 	/**
 	 * Getter/Setter - plugin data array
+	 * 
+	 * @since 0.14
 	 */
 	public function plugin_data() {
-		return $this->plugin_data ??= get_plugin_data( $this->plugin_file, false);
+		return $this->plugin_data ??= get_plugin_data( $this->plugin_file, false ); // false = no markup (i think)
 	}
 
 	/**
 	 * Getter/Setter - const
 	 * Prefix of plugin specific defines (PLUGIN_NAME_PATH etc.)
 	 * If not provided - plugin slug will be uppercase.
+	 * 
+	 * @since 0.4
 	 * 
 	 * @param  string|null $const (string should be uppercase)
 	 * @return string      $this->const
@@ -309,6 +339,8 @@ class PluginCore {
 
 	/**
 	 * Getter/setter
+	 * 
+	 * @since 0.6
 	 */
 	public function path() {
 		return $this->path ??= plugin_dir_path( $this->plugin_file );
@@ -316,6 +348,8 @@ class PluginCore {
 
 	/**
 	 * Getter/Setter
+	 * 
+	 * @since 0.6
 	 */
 	public function url() {
 		return $this->url ??= plugin_dir_url( $this->plugin_file );
@@ -323,6 +357,8 @@ class PluginCore {
 
 	/**
 	 * Getter/Setter
+	 * 
+	 * @since 0.12
 	 */
 	public function plugin_basename() {
 		return $this->plugin_basename ??= plugin_basename( $this->plugin_file );
@@ -332,6 +368,8 @@ class PluginCore {
 	 * Setter - Activation callback
 	 * Callback runs on 'register_activation_hook'
 	 * PluginCore does not validate. Authors must ensure valid callback.
+	 * 
+	 * @since 0.4
 	 * 
 	 * @param callable $activate_cb - Activation callback
 	 * 
@@ -346,6 +384,8 @@ class PluginCore {
 	 * Callback runs on 'register_deactivation_hook'
 	 * PluginCore does not validate. Authors must ensure valid callback.
 	 * 
+	 * @since 0.4
+	 * 
 	 * @param callable $deactivate_cb - Deactivation callback.
 	 * 
 	 * @access private
@@ -358,6 +398,8 @@ class PluginCore {
 	 * Setter - Uninstall callback
 	 * Callback runs on 'register_uninstall_hook'
 	 * PluginCore does not validate. Authors must ensure valid callback.
+	 * 
+	 * @since 0.4
 	 * 
 	 * @param callable $uninstall_cb - Uninstall callback.
 	 * 
@@ -374,6 +416,8 @@ class PluginCore {
 	 * (@see upgrade_cb_wrapper() below)
 	 * 
 	 * PluginCore does not validate. Authors must ensure valid callback.
+	 * 
+	 * @since 0.11
 	 * 
 	 * @param callable $upgrade_cb - Upgrade callback.
 	 * 
@@ -407,15 +451,17 @@ class PluginCore {
 	/**
 	 * Getter/Setter - AdminPage
 	 * 
-	 * Construct AdminPage instance for plugin. 
+	 * Construct AdminPage instance for plugin.
+	 * 
+	 * @since 0.14
+	 * @since 0.17 - Pass instance of PluginCore to AdminPage (~0.14)
 	 * 
 	 * @param array $admin_page - AdminPage settings array
-	 * 
 	 * @return AdminPage
 	 */
 	public function admin_page( $admin_page ) {
 
-		if ( ! class_exists( 'WPHelper\AdminPage' ) )
+		if ( ! class_exists( AdminPage::class ) )
 			return;
 
 		// validate
@@ -424,7 +470,7 @@ class PluginCore {
 
 		$this->admin_page = new AdminPage( $admin_page );
 
-		// validate for older versions of AdminPage
+		// Validate for older (<0.14) versions of AdminPage
 		if ( method_exists( $this->admin_page, 'plugin_core' ) ) {
 			$this->admin_page->plugin_core( $this ); // back-reference
 		}
@@ -441,6 +487,8 @@ class PluginCore {
 	 * set $update_repo_uri (string)
 	 * set $update_auth (optional)
 	 * set $update_branch (optional)
+	 * 
+	 * @since 0.9
 	 * 
 	 * @param bool|string|array $update_checker
 	 */
@@ -490,6 +538,9 @@ class PluginCore {
 	/**
 	 * Init Puc update checker instance
 	 * 
+	 * @since 0.9  init_update_checker()
+	 * @since 0.21 build_update_checker()
+	 * 
 	 * @uses Puc_v4_Factory::buildUpdateChecker
 	 */
 	private function build_update_checker() {
@@ -520,6 +571,8 @@ class PluginCore {
 	 * This function called on upgrader_process_complete
 	 * sanity-checks if our plugin was upgraded
 	 * if so - calls upgrade_cb provided by our plugin
+	 * 
+	 * @since 0.12
 	 */
 	public function upgrade_cb_wrapper( $upgrader_object, $options ) {
 		if(
