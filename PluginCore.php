@@ -1,7 +1,7 @@
 <?php
 namespace WPHelper;
 
-use Puc_v4_Factory;
+use Puc_v4_Factory as PucFactory;
 
 defined( 'ABSPATH' ) || die( 'No soup for you!' );
 
@@ -486,7 +486,7 @@ class PluginCore {
 	/**
 	 * Setter
 	 * 
-	 * Setup info used by Puc_v4_Factory
+	 * Setup info used by PucFactory
 	 * 
 	 * set $update_checker (bool)
 	 * set $update_repo_uri (string)
@@ -546,14 +546,14 @@ class PluginCore {
 	 * @since 0.9  init_update_checker()
 	 * @since 0.21 build_update_checker()
 	 * 
-	 * @uses Puc_v4_Factory::buildUpdateChecker
+	 * @uses PucFactory::buildUpdateChecker
 	 */
 	private function build_update_checker() {
-	
-		if ( ! class_exists('Puc_v4_Factory') )
+
+		if ( ! class_exists( PucFactory::class ) )
 			return;
 
-		$update_checker = Puc_v4_Factory::buildUpdateChecker(
+		$update_checker = PucFactory::buildUpdateChecker(
 			$this->update_repo_uri,
 			$this->plugin_file,
 			$this->slug() // using slug()
