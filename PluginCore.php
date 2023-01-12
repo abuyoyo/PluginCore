@@ -135,6 +135,23 @@ class PluginCore {
 	}
 
 	/**
+	 * Retrieve instance of PluginCore by plugin __FILE__.
+	 * 
+	 * @since 0.24
+	 * 
+	 * @param string $filename - Plugin filename
+	 * @return PluginCore - Instance of specific plugin.
+	 */
+	static public function get_by_file( $filename ) {
+		return current(
+			array_filter(
+				self::$cores,
+				fn($core) => $core->file() == $filename
+			)
+		) ?: null;
+	}
+
+	/**
 	 * Constructor
 	 * 
 	 * @since 0.1
