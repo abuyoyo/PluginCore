@@ -59,6 +59,11 @@ class PluginCore {
 	private $plugin_basename;
 
 	/**
+	 * @var array plugin header metadata 
+	 */
+	private $plugin_data;
+
+	/**
 	 * @var callable 
 	 */
 	public $activate_cb;
