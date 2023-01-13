@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.24
+Release Date: Jan 13, 2023
+
+### Added
+- Static `get_by_file` method. Get PluginCore instance by plugin filename.
+
 ## 0.23
 Release Date: Aug 8, 2022
 
