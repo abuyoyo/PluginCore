@@ -46,6 +46,11 @@ class PluginCore {
 	/**
 	 * @var string 
 	 */
+	private $token;
+
+	/**
+	 * @var string 
+	 */
 	private $path;
 
 	/**
@@ -170,6 +175,8 @@ class PluginCore {
 			$this->slug( $options->slug ?? null ); // fallback: guess slug from plugin basename
 
 			$this->const( $options->const ?? null ); // fallback: generate const from slug
+
+			$this->token( $options->token ?? null ); // fallback: generate token from slug
 
 			if ( isset( $options->activate_cb ) )
 				$this->activate_cb( $options->activate_cb );
@@ -357,6 +364,19 @@ class PluginCore {
 	 */
 	public function const( $const = null ) {
 		return $this->const ??= $const ?: str_replace( '-', '_' , strtoupper( $this->slug() ) );
+	}
+
+	/**
+	 * Getter/Setter - token
+	 * Create a single-token slug (convert to underscore + lowercase).
+	 * 
+	 * @since 0.25
+	 * 
+	 * @param  string|null $token (string will be normalized)
+	 * @return string      $this->token
+	 */
+	public function token( $token = null ) {
+		return $this->token ??= str_replace( '-', '_' , strtolower( $token ?: $this->slug() ) );
 	}
 
 	/**
