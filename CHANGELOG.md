@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.25
+Release Date: Feb 3, 2023
+
+### Added
+- Property `token` and method `token`. Lowercase underscore token to be used as variable name.
+
 ## 0.24
 Release Date: Jan 13, 2023
 
