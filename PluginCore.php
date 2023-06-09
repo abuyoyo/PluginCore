@@ -506,15 +506,14 @@ class PluginCore {
 		if ( ! class_exists( AdminPage::class ) )
 			return;
 
-		// validate
-		$admin_page['slug'] ??= $this->slug();
-		$admin_page['title'] ??= $this->title();
-
-		$this->admin_page = new AdminPage( $admin_page );
-
-		// Validate for older (<0.14) versions of AdminPage
-		if ( method_exists( $this->admin_page, 'plugin_core' ) ) {
-			$this->admin_page->plugin_core( $this ); // back-reference
+		if ( ! isset( $this->admin_page ) ){
+			
+			// validate
+			$admin_page['slug'] ??= $this->slug();
+			$admin_page['title'] ??= $this->title();
+			$admin_page['plugin_core'] ??= $this;
+			
+			$this->admin_page = new AdminPage( $admin_page );
 		}
 
 		return $this->admin_page;
