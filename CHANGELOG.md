@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.26
+Release Date: Jun 9, 2023
+
+### Fixed
+- Fix passing PluginCore instance to AdminPage constructor in `admin_page()` method.
+
 ## 0.25
 Release Date: Feb 3, 2023
 
