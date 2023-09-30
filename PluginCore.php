@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || die( 'No soup for you!' );
 if ( ! class_exists( 'WPHelper/PluginCore' ) ):
 
 // require dependency get_plugin_data()
-if( ! function_exists('get_plugin_data') ) {
+if( ! function_exists( 'get_plugin_data' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 }
 
