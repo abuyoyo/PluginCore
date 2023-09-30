@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.27
+Release Date: Oct 3, 2023
+
+### Added
+- Support Plugin Update Checker v5 as well as v4. Create class alias `WPHelper\PucFactory` for `YahnisElsts\PluginUpdateChecker\v5\PucFactory` if available. Fallback to `Puc_v4_Factory`.
+
 ## 0.26
 Release Date: Jun 9, 2023
 
