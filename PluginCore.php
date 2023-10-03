@@ -1,14 +1,12 @@
 <?php
 namespace WPHelper;
 
-use Puc_v4_Factory as PucFactory;
-
 defined( 'ABSPATH' ) || die( 'No soup for you!' );
 
 if ( ! class_exists( 'WPHelper/PluginCore' ) ):
 
 // require dependency get_plugin_data()
-if( ! function_exists('get_plugin_data') ) {
+if( ! function_exists( 'get_plugin_data' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 }
 
@@ -19,7 +17,7 @@ if( ! function_exists('get_plugin_data') ) {
  * 
  * (@see README.md)
  * 
- * @version 0.26
+ * @version 0.27
  */
 class PluginCore {
 
@@ -581,12 +579,30 @@ class PluginCore {
 	 * 
 	 * @since 0.9  init_update_checker()
 	 * @since 0.21 build_update_checker()
+	 * @since 0.27 Create class alias WPHelper\PucFactory - support plugin-update-checker v4 & v5
 	 * 
 	 * @uses PucFactory::buildUpdateChecker
 	 */
 	private function build_update_checker() {
 
-		if ( ! class_exists( PucFactory::class ) )
+		/**
+		 * Create class alias WPHelper\PucFactory
+		 * Support YahnisElsts\PluginUpdateChecker v4 | v5
+		 * 
+		 * @since 0.27
+		 */
+		if ( ! class_exists( 'WPHelper\PucFactory' ) ) {
+			if ( class_exists( 'YahnisElsts\PluginUpdateChecker\v5\PucFactory' ) ) {
+				$actual_puc = 'YahnisElsts\PluginUpdateChecker\v5\PucFactory';
+			} else if ( class_exists( 'Puc_v4_Factory' ) ) {
+				$actual_puc = 'Puc_v4_Factory';
+			}
+			if ( ! empty( $actual_puc ) ) {
+				class_alias( $actual_puc, 'WPHelper\PucFactory' );
+			}
+		}
+
+		if ( ! class_exists( 'WPHelper\PucFactory' ) )
 			return;
 
 		$update_checker = PucFactory::buildUpdateChecker(
