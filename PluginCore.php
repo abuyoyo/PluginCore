@@ -417,6 +417,15 @@ class PluginCore {
 	}
 
 	/**
+	 * Getter
+	 * 
+	 * @since 0.28
+	 */
+	public function version() {
+		return $this->plugin_data()['Version'];
+	}
+
+	/**
 	 * Setter - Activation callback
 	 * Callback runs on 'register_activation_hook'
 	 * PluginCore does not validate. Authors must ensure valid callback.
