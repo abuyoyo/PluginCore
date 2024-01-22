@@ -17,7 +17,7 @@ if( ! function_exists( 'get_plugin_data' ) ) {
  * 
  * (@see README.md)
  * 
- * @version 0.27
+ * @version 0.28
  */
 class PluginCore {
 
