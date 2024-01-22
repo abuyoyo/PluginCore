@@ -395,10 +395,16 @@ class PluginCore {
 	/**
 	 * Getter/Setter
 	 * 
+	 * Allows passing of relative path string
+	 * 
 	 * @since 0.6
+	 * @since 0.28 Allow passing of relative path string.
+	 * 
+	 * @param string $path (optional) relative path - affects return value only.
+	 * @return string plugin directory URL with optional relative path.
 	 */
-	public function url() {
-		return $this->url ??= plugin_dir_url( $this->plugin_file );
+	public function url( $path='' ) {
+		return ( $this->url ??= plugin_dir_url( $this->plugin_file ) ) . ltrim( $path, '\\/' );
 	}
 
 	/**
