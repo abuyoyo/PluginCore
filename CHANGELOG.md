@@ -1,5 +1,15 @@
 # WPHelper\PluginCore Changelog
 
+## 0.28
+Release Date: Jan 22, 2024
+
+### Added
+- Public method `version()` returns plugin version from plugin header.
+
+### Changed
+- Getter method `path()` accepts optional relative path parameter. Does not affect setter functionality.
+- Getter method `url()` accepts optional relative path parameter. Does not affect setter functionality.
+
 ## 0.27
 Release Date: Oct 3, 2023
 
