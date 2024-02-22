@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.29
+Release Date: Feb 22, 2024
+
+### Fixed
+- Check if constants are defined before defining constants.
+
 ## 0.28
 Release Date: Jan 22, 2024
 
