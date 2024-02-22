@@ -236,14 +236,23 @@ class PluginCore {
 		self::$cores[ $this->slug ] = $this;
 
 		// define constants
-		define( $this->const . '_PATH', $this->path );
-		define( $this->const . '_DIR', $this->path );
+		if ( ! defined( $this->const . '_PATH' ) )
+			define( $this->const . '_PATH', $this->path );
 
-		define( $this->const . '_URL', $this->url );
-		define( $this->const . '_BASENAME', $this->plugin_basename );
+		if ( ! defined( $this->const . '_DIR' ) )
+			define( $this->const . '_DIR', $this->path );
+	
+		if ( ! defined( $this->const . '_URL' ) )
+			define( $this->const . '_URL', $this->url );
 
-		define( $this->const . '_PLUGIN_FILE',  $this->plugin_file );
-		define( $this->const . '_FILE',  $this->plugin_file );
+		if ( ! defined( $this->const . '_BASENAME' ) )
+			define( $this->const . '_BASENAME', $this->plugin_basename );
+
+		if ( ! defined( $this->const . '_PLUGIN_FILE' ) )
+			define( $this->const . '_PLUGIN_FILE',  $this->plugin_file );
+
+		if ( ! defined( $this->const . '_FILE' ) )
+			define( $this->const . '_FILE',  $this->plugin_file );
 
 		$this->register_hooks();
 
