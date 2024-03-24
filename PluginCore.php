@@ -398,7 +398,7 @@ class PluginCore {
 	 * @return string plugin directory path with optional relative path.
 	 */
 	public function path( $path='' ) {
-		return ( $this->path ??= plugin_dir_path( $this->plugin_file ) ) . ltrim( $path, '\\/' );
+		return ( $this->path ??= wp_normalize_path( plugin_dir_path( $this->plugin_file ) ) ) . ltrim( wp_normalize_path( $path ), '\\/' );
 	}
 
 	/**
