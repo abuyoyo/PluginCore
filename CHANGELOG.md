@@ -1,5 +1,12 @@
 # WPHelper\PluginCore Changelog
 
+## 0.30
+Release Date: Apr 8, 2024
+
+### Changed
+- `slug` defaults to plugin header `TextDomain`.
+- `path()` runs `wp_normalize_path` on file path and relative path.
+
 ## 0.29
 Release Date: Feb 22, 2024
 

@@ -320,7 +320,7 @@ class PluginCore {
 	 * @return string      $this->slug
 	 */
 	public function slug( $slug = null ) {
-		return $this->slug ??= $slug ?: basename( $this->plugin_file, '.php' );
+		return $this->slug ??= $slug ?: $this->plugin_data()['TextDomain'] ?: basename( $this->plugin_file, '.php' );
 	}
 
 	/**
@@ -398,7 +398,7 @@ class PluginCore {
 	 * @return string plugin directory path with optional relative path.
 	 */
 	public function path( $path='' ) {
-		return ( $this->path ??= plugin_dir_path( $this->plugin_file ) ) . ltrim( $path, '\\/' );
+		return ( $this->path ??= wp_normalize_path( plugin_dir_path( $this->plugin_file ) ) ) . ltrim( wp_normalize_path( $path ), '\\/' );
 	}
 
 	/**
