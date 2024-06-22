@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.31
+Release Date: Jun 22, 2024
+
+### Changed
+- Option `action_links` accepts single array with keys `href` and `text`.
+
 ## 0.30
 Release Date: Apr 8, 2024
 
