@@ -515,6 +515,18 @@ class PluginCore {
 	 * @todo perhaps have separate action_links_array + action_links_cb variables
 	 */
 	private function action_links( $action_links ) {
+
+		// accept single array ['text', 'href']
+		if (
+			is_array( $action_links )
+			&&
+			count( $action_links ) == 2
+			&&
+			array_keys( $action_links ) == ['text', 'href']
+		) {
+			$action_links = [ $action_links ];
+		}
+
 		$this->action_links = $action_links;
 	}
 
