@@ -214,8 +214,6 @@ class PluginCore {
 	 * 
 	 * @since 0.1  setup()
 	 * @since 0.21 bootstrap()
-	 * 
-	 * @todo set plugin_dir_path, plugin_basename as accessible public variables (available thru methods atm)
 	 */
 	private function bootstrap() {
 
@@ -354,6 +352,23 @@ class PluginCore {
 	 * Getter/Setter - plugin data array
 	 * 
 	 * @since 0.14
+	 * 
+	 * @return array Plugin data. Values will be empty if not supplied by the plugin.
+	 *   - string $Name Name of the plugin. Should be unique.
+	 *   - string $PluginURI Plugin URI.
+	 *   - string $Version Plugin version.
+	 *   - string $Description Plugin description.
+	 *   - string $Author Plugin author's name.
+	 *   - string $AuthorURI Plugin author's website address (if set).
+	 *   - string $TextDomain Plugin textdomain.
+	 *   - string $DomainPath Plugin's relative directory path to .mo files.
+	 *   - bool $Network Whether the plugin can only be activated network-wide.
+	 *   - string $RequiresWP Minimum required version of WordPress.
+	 *   - string $RequiresPHP Minimum required version of PHP.
+	 *   - string $UpdateURI ID of the plugin for update purposes, should be a URI.
+	 *   - string $RequiresPlugins Comma separated list of dot org plugin slugs.
+	 *   - string $Title Title of the plugin and link to the plugin's site (if set).
+	 *   - string $AuthorName Plugin author's name.
 	 */
 	public function plugin_data() {
 		return $this->plugin_data ??= get_plugin_data( $this->plugin_file, false ); // false = no markup (i think)
