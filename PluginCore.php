@@ -18,6 +18,8 @@ if( ! function_exists( 'get_plugin_data' ) ) {
  * (@see README.md)
  * 
  * @version 0.28
+ * 
+ * @todo Translations should be loaded at the init action or later. WordPress 6.7.0
  */
 class PluginCore {
 
@@ -369,9 +371,11 @@ class PluginCore {
 	 *   - string $RequiresPlugins Comma separated list of dot org plugin slugs.
 	 *   - string $Title Title of the plugin and link to the plugin's site (if set).
 	 *   - string $AuthorName Plugin author's name.
+	 * 
+	 * @todo Translations should be loaded at the init action or later. WordPress 6.7.0
 	 */
 	public function plugin_data() {
-		return $this->plugin_data ??= get_plugin_data( $this->plugin_file, false ); // false = no markup (i think)
+		return $this->plugin_data ??= get_plugin_data( $this->plugin_file, false, false ); // disable translate
 	}
 
 	/**
