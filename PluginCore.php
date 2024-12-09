@@ -318,7 +318,7 @@ class PluginCore {
 	 * @return string      $this->slug
 	 */
 	public function slug( $slug = null ) {
-		return $this->slug ??= $slug ?: $this->plugin_data()['TextDomain'] ?: basename( $this->plugin_file, '.php' );
+		return $this->slug ??= ( $slug ?: $this->plugin_data()['TextDomain'] ?: basename( $this->plugin_file, '.php' ) );
 	}
 
 	/**
