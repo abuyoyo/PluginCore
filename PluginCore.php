@@ -143,17 +143,25 @@ class PluginCore {
 	 * Retrieve instance of PluginCore by plugin __FILE__.
 	 * 
 	 * @since 0.24
+	 * @since 0.32 Add optional parameters $init_if_null + $options
 	 * 
-	 * @param string $filename - Plugin filename
+	 * @param string $filename  Plugin filename
+	 * @param bool   $init_if_null  (Optional) If true will create a new PluginCore instance if not registered yet (default: false)
+	 * @param bool   $options       (Optional) Pass PluginCore options array if $init_if_null is true (default: null)
+	 * 
 	 * @return PluginCore - Instance of specific plugin.
 	 */
-	static public function get_by_file( $filename ) {
+	static public function get_by_file( $filename, $init_if_null = false, $options = null ) {
 		return current(
 			array_filter(
 				self::$cores,
 				fn($core) => $core->file() == $filename
 			)
-		) ?: null;
+		) ?: (
+			$init_if_null
+				? new self( $filename, $options )
+				: null
+		);
 	}
 
 	/**
