@@ -1,5 +1,12 @@
 # WPHelper\PluginCore Changelog
 
+## 0.32
+Release Date: Dec 10, 2024
+
+### Changed
+- Add optional parameter `init_if_null` to method `get_by_file()`. Allows late init of PluginCore instance from file name.
+- Method `plugin_data()` does not load translations. Disable WordPress core 6.7.0 `doing_it_wrong` message.
+
 ## 0.31
 Release Date: Jun 22, 2024
 
