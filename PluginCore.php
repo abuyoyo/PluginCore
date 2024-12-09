@@ -17,7 +17,7 @@ if( ! function_exists( 'get_plugin_data' ) ) {
  * 
  * (@see README.md)
  * 
- * @version 0.28
+ * @version 0.32
  * 
  * @todo Translations should be loaded at the init action or later. WordPress 6.7.0
  */
