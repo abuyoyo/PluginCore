@@ -681,11 +681,11 @@ class PluginCore {
 		);
 
 		//Optional: If you're using a private repository, specify the access token like this:
-		if ( isset( $this->update_auth ) )
+		if ( isset( $this->update_auth ) && method_exists( $update_checker, 'setAuthentication' ) )
 			$update_checker->setAuthentication( $this->update_auth );
 
 		//Optional: Set the branch that contains the stable release.
-		if ( isset( $this->update_branch ) )
+		if ( isset( $this->update_branch ) && method_exists( $update_checker, 'setBranch' ) )
 			$update_checker->setBranch( $this->update_branch );
 
 	}
