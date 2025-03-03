@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.33
+Release Date: Mar 3, 2025
+
+### Changed
+- Add `method_exists` checks in `build_update_checker()`.
+
 ## 0.32
 Release Date: Dec 10, 2024
 
