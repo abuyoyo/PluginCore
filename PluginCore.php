@@ -122,7 +122,7 @@ class PluginCore {
 	 * Static array of all PluginCore instances
 	 * Used in PluginCore::get($slug)
 	 * 
-	 * @var array[PluginCore] Instances of PluginCore
+	 * @var array<PluginCore> Instances of PluginCore
 	 */
 	private static $cores = [];
 
