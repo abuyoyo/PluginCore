@@ -176,9 +176,9 @@ class PluginCore {
 
 		$options = (object) $options;
 
-		$this->title( $options->title ?? null ); // fallback: get title from header plugin_data
-
 		$this->slug( $options->slug ?? null ); // fallback: guess slug from plugin basename
+
+		$this->title( $options->title ?? null ); // fallback: get title from header plugin_data
 
 		$this->const( $options->const ?? null ); // fallback: generate const from slug
 
