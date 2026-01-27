@@ -170,11 +170,9 @@ class PluginCore {
 	 * @since 0.1
 	 * @since 0.2 Accept filename as first param and options array as optional param
 	 */
-	function __construct( $plugin_file, $options = null ) {
+	function __construct( $plugin_file, $options = [] ) {
 
 		$this->plugin_file( $plugin_file );
-
-		if ( is_array( $options ) && ! empty( $options ) ) {
 
 			$options = (object) $options;
 
@@ -207,8 +205,6 @@ class PluginCore {
 			if ( isset( $options->update_checker ) )
 				$this->update_checker( $options->update_checker );
 
-		}
-		
 		$this->bootstrap();
 
 	}
