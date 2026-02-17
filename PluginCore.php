@@ -122,7 +122,7 @@ class PluginCore {
 	 * Static array of all PluginCore instances
 	 * Used in PluginCore::get($slug)
 	 * 
-	 * @var array[PluginCore] Instances of PluginCore
+	 * @var array<PluginCore> Instances of PluginCore
 	 */
 	private static $cores = [];
 
@@ -170,45 +170,41 @@ class PluginCore {
 	 * @since 0.1
 	 * @since 0.2 Accept filename as first param and options array as optional param
 	 */
-	function __construct( $plugin_file, $options = null ) {
+	function __construct( $plugin_file, $options = [] ) {
 
 		$this->plugin_file( $plugin_file );
 
-		if ( is_array( $options ) && ! empty( $options ) ) {
+		$options = (object) $options;
 
-			$options = (object) $options;
+		$this->slug( $options->slug ?? null ); // fallback: guess slug from plugin basename
 
-			$this->title( $options->title ?? null ); // fallback: get title from header plugin_data
+		$this->title( $options->title ?? null ); // fallback: get title from header plugin_data
 
-			$this->slug( $options->slug ?? null ); // fallback: guess slug from plugin basename
+		$this->const( $options->const ?? null ); // fallback: generate const from slug
 
-			$this->const( $options->const ?? null ); // fallback: generate const from slug
+		$this->token( $options->token ?? null ); // fallback: generate token from slug
 
-			$this->token( $options->token ?? null ); // fallback: generate token from slug
+		if ( isset( $options->activate_cb ) )
+			$this->activate_cb( $options->activate_cb );
 
-			if ( isset( $options->activate_cb ) )
-				$this->activate_cb( $options->activate_cb );
+		if ( isset( $options->deactivate_cb ) )
+			$this->deactivate_cb( $options->deactivate_cb );
 
-			if ( isset( $options->deactivate_cb ) )
-				$this->deactivate_cb( $options->deactivate_cb );
+		if ( isset( $options->uninstall_cb ) )
+			$this->uninstall_cb( $options->uninstall_cb );
 
-			if ( isset( $options->uninstall_cb ) )
-				$this->uninstall_cb( $options->uninstall_cb );
+		if ( isset( $options->upgrade_cb ) )
+			$this->upgrade_cb( $options->upgrade_cb );
 
-			if ( isset( $options->upgrade_cb ) )
-				$this->upgrade_cb( $options->upgrade_cb );
+		if ( isset( $options->action_links ) )
+			$this->action_links( $options->action_links );
 
-			if ( isset( $options->action_links ) )
-				$this->action_links( $options->action_links );
+		if ( isset( $options->admin_page ) )
+			$this->admin_page( $options->admin_page ); // creates AdminPage instance
 
-			if ( isset( $options->admin_page ) )
-				$this->admin_page( $options->admin_page ); // creates AdminPage instance
+		if ( isset( $options->update_checker ) )
+			$this->update_checker( $options->update_checker );
 
-			if ( isset( $options->update_checker ) )
-				$this->update_checker( $options->update_checker );
-
-		}
-		
 		$this->bootstrap();
 
 	}
