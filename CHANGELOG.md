@@ -1,5 +1,11 @@
 # WPHelper\PluginCore Changelog
 
+## 0.34
+Release Date: Feb 17, 2026
+
+### Changed
+- Always init variables. No options required.
+
 ## 0.33
 Release Date: Mar 3, 2025
 
